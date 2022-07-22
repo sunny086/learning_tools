@@ -13,8 +13,8 @@ var siganChannel = make(chan os.Signal, 1)
 
 func main() {
 	//ContextWithCancel()
-	//ContextWithTimeout()
-	ContextWithDeadline()
+	ContextWithTimeout()
+	//ContextWithDeadline()
 }
 
 func ContextWithCancel() {
@@ -25,11 +25,17 @@ func ContextWithCancel() {
 			case <-ctx.Done():
 				fmt.Println(ctx.Value("howie"))
 				return
+			default:
+				func() {
+					fmt.Println("hello")
+					time.Sleep(time.Second * 2)
+					fmt.Println("hello")
+				}()
 			}
 		}
 	}()
 	fmt.Println("开始")
-	time.AfterFunc(10*time.Second, func() {
+	time.AfterFunc(5*time.Second, func() {
 		ctx = context.WithValue(ctx, "howie", "10秒后调用cancel()")
 		cancel()
 		fmt.Println("结束")
@@ -38,7 +44,7 @@ func ContextWithCancel() {
 
 }
 
-func eeContextWithTimeout() {
+func ContextWithTimeout() {
 	fmt.Println(time.Now().Format("2006-01-02 15:04:05"))
 	start := time.Now()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -74,8 +80,8 @@ func ContextWithDeadline() {
 	req, _ := http.NewRequest(http.MethodGet, "http://google.com", nil)
 	// Associate the cancellable context we just created to the request
 	req = req.WithContext(ctx)
-	client := &http.Client{}
-	res, err := client.Do(req)
+	//client := &http.Client{}
+	//res, err := client.Do(req)
 
 }
 
